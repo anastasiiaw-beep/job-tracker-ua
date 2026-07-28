@@ -1,0 +1,4 @@
+venv/
+job_search_ua.db
+__pycache__/
+*.pyc
