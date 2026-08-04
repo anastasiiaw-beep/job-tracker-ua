@@ -15,12 +15,32 @@ def get_connection():
 
 
 # Загрузка данных вакансий
+# Загрузка данных вакансий
 def load_data():
     conn = get_connection()
+    cursor = conn.cursor()
+    # Проверяем, существует ли таблица vacancies
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='vacancies'"
+    )
+    if not cursor.fetchone():
+        # Если таблицы нет, создаем её
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS vacancies (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT,
+                company TEXT,
+                location TEXT,
+                salary_usd REAL,
+                source TEXT,
+                link TEXT
+            )
+        """)
+        conn.commit()
+
     df = pd.read_sql_query("SELECT * FROM vacancies", conn)
     conn.close()
     return df
-
 
 # Создание и проверка структуры таблицы откликов
 def init_applications_db():
